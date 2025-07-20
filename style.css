@@ -1,0 +1,41 @@
+body {
+  font-family: Arial, sans-serif;
+  margin: 20px;
+  background-color: #f9f9f9;
+}
+
+.container {
+  width: 80%;
+  margin: auto;
+  text-align: center;
+}
+
+input {
+  width: 60%;
+  padding: 10px;
+  margin-bottom: 20px;
+}
+
+button {
+  padding: 10px 15px;
+  margin: 5px;
+}
+
+.responses {
+  display: flex;
+  justify-content: space-around;
+  flex-wrap: wrap;
+  margin-top: 20px;
+}
+
+.ai-box {
+  border: 1px solid #ccc;
+  padding: 15px;
+  width: 22%;
+  background-color: #fff;
+  border-radius: 5px;
+}
+
+.selected-section {
+  margin-top: 30px;
+}

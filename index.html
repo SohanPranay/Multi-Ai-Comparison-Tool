@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Multi-AI Comparison Tool</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <h1>Multi-AI Comparison Tool</h1>
+    <input type="text" id="questionInput" placeholder="Ask your question here">
+    <button onclick="submitQuestion()">Submit</button>
+    <div class="responses">
+
+      <div class="ai-box" id="chatgptBox">
+
+        <h3>ChatGPT</h3>
+
+        <p id="chatgptResponse">Waiting...</p>
+
+        <button onclick="selectResponse('chatgptResponse')">Select</button>
+
+      </div>
+
+      <div class="ai-box" id="geminiBox">
+
+        <h3>Gemini</h3>
+
+        <p id="geminiResponse">Waiting...</p>
+
+        <button onclick="selectResponse('geminiResponse')">Select</button>
+
+      </div>
+
+      <div class="ai-box" id="deepseekBox">
+
+        <h3>DeepSeek</h3>
+
+        <p id="deepseekResponse">Waiting...</p>
+
+        <button onclick="selectResponse('deepseekResponse')">Select</button>
+
+      </div>
+
+    </div>
+
+
+
+    <div class="selected-section">
+
+      <h3>Selected Response</h3>
+
+      <textarea id="selectedText" rows="5" placeholder="Your selected answer will appear here..."></textarea>
+
+      <button onclick="improveAnswer()">Improve with ChatGPT</button>
+
+    </div>
+
+  </div>
+
+
+
+  <script>
+
+    async function submitQuestion() {
+
+      const question = document.getElementById('questionInput').value;
+
+      if (!question) return alert('Please enter a question.');
+
+
+
+      const aiEndpoints = ['chatgpt', 'gemini', 'deepseek'];
+
+
+
+      aiEndpoints.forEach(async (ai) => {
+
+        try {
+
+          const response = await fetch(`http://localhost:5000/ask/${ai}`, {
+
+            method: 'POST',
+
+            headers: {
+
+              'Content-Type': 'application/json'
+
+            },
+
+            body: JSON.stringify({ question })
+
+          });
+
+
+
+          const data = await response.json();
+
+          document.getElementById(`${ai}Response`).innerText = data.answer || data.response || 'No response';
+
+        } catch (err) {
+
+          document.getElementById(`${ai}Response`).innerText = `Error fetching response from ${ai}`;
+
+        }
+
+      });
+
+    }
+
+
+
+    function selectResponse(sourceId) {
+
+      const text = document.getElementById(sourceId).innerText;
+
+      document.getElementById('selectedText').value = text;
+
+    }
+
+
+
+    async function improveAnswer() {
+
+      const currentText = document.getElementById('selectedText').value;
+
+      if (!currentText) return alert("Select a response first!");
+
+
+
+      try {
+
+        const response = await fetch('http://localhost:5000/ask/chatgpt', {
+
+          method: 'POST',
+
+          headers: {
+
+            'Content-Type': 'application/json'
+
+          },
+
+          body: JSON.stringify({ question: `Improve this: ${currentText}` })
+
+        });
+
+
+
+        const data = await response.json();
+
+        document.getElementById('selectedText').value = data.answer || data.response;
+
+      } catch (err) {
+
+        alert('Failed to improve response.');
+
+      }
+
+    }
+
+  </script>
+
+</body>
+
+</html>
+
